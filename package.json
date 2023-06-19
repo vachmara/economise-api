@@ -1,0 +1,17 @@
+{
+  "name": "economise-server",
+  "version": "1.0.0",
+  "description": "A simple express server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./node_modules/nodemon/bin/nodemon.js index.js"
+  },
+  "author": "Your Name",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.22",
+    "openai": "^3.3.0"
+  }
+}
