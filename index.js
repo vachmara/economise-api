@@ -55,7 +55,7 @@ app.post('/api/generateRecipe', async (req, res) => {
     console.log(ingredients.join(", "))
 
     try{
-        const recipe = await generateRecipes(ingredients.join(", "));
+        const recipe = await generateRecipe(ingredients.join(", "));
         console.dir(recipe)
         const r = dJSON.parse(recipe)
         
