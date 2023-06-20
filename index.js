@@ -14,7 +14,7 @@ const express = require('express')
 const app = express()
 
 const corsOptions ={
-    origin:['http://localhost:3000', 'https://vachmara.github.io/economise/'], 
+    origin:['http://localhost:3000', 'https://vachmara.github.io/'], 
     credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
 }
