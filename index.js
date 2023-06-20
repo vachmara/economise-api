@@ -14,7 +14,7 @@ const express = require('express')
 const app = express()
 
 const corsOptions ={
-    origin: process.env.LOCAL ? 'http://localhost:3000' : 'https://vachmara.github.io/', 
+    origin:['http://localhost:3000', 'https://vachmara.github.io/economise'], 
     credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
 }
@@ -55,8 +55,8 @@ app.post('/api/generateRecipe', async (req, res) => {
     console.log(ingredients.join(", "))
 
     try{
-        const recipe = await generateRecipe(ingredients.join(", "));
-        //console.dir(recipe)
+        const recipe = await generateRecipes(ingredients.join(", "));
+        console.dir(recipe)
         const r = dJSON.parse(recipe)
         
         return res.status(200).json({recipe: r})
