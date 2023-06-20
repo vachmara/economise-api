@@ -7,38 +7,64 @@ const configuration = new Configuration({
 });
 
 const openai = new OpenAIApi(configuration);
-
+const dJSON = require('dirty-json');
+const cors = require('cors')
+const bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
 
-const generateRecipes = async (ingredients) => {
-    const completion = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
-        temperature: 1.17,
-        max_tokens: 800,
-        top_p: 1,
-        frequency_penalty: 0.3,
-        presence_penalty: 0.3,
-        messages: [
-            { 
-                "role": "system", 
-                "content": system.prompt
-            }, 
-            { 
-                role: "user", 
-                content: ingredients 
-            }
-        ],
-    });
-
-    console.log(completion);
-    return completion.data?.choices[0]?.message;
+const corsOptions ={
+    origin:['http://localhost:3000', 'https://vachmara.github.io/economise/'], 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
 }
 
-app.post('/generateRecipes', async (req, res) => {
-    const ingredients = req.body.ingredients;
-    const recipes = await generateRecipes(ingredients);
-    res.json(recipes);
+app.use(cors(corsOptions))
+app.use(bodyParser.json())
+
+const generateRecipe = async (ingredients) => {
+    try{
+        const completion = await openai.createChatCompletion({
+            model: "gpt-3.5-turbo",
+            temperature: 1,
+            max_tokens: 450,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            messages: [
+                { 
+                    "role": "system", 
+                    "content": system.prompt
+                }, 
+                { 
+                    role: "user", 
+                    content: ingredients
+                }
+            ],
+        });
+        return completion.data?.choices[0]?.message.content;
+    }
+    catch(err){
+        console.dir(err)
+        return null;
+    }
+}
+
+app.post('/api/generateRecipe', async (req, res) => {
+    const {ingredients} = req.body;
+    console.log(ingredients.join(", "))
+
+    try{
+        const recipe = await generateRecipe(ingredients.join(", "));
+        //console.dir(recipe)
+        const r = dJSON.parse(recipe)
+        
+        return res.status(200).json({recipe: r})
+    }
+    catch(err){
+        console.dir(err)
+        return res.status(500).json({error: err.message})
+    }
 })
 
 app.listen(process.env.PORT || 3333)
